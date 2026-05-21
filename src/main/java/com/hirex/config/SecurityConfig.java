@@ -81,7 +81,7 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(List.of(
 //            "http://localhost:3000"
-                "https://new-job-portal-frontend.onrender.com"
+                "https://backend-7aoi.onrender.com"
 
         ));
 
