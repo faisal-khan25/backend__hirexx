@@ -81,8 +81,7 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(List.of(
             "http://localhost:3000"
-            //     "https://backend-7aoi.onrender.com"
-            // https://frontend-7mm6.onrender.com//
+            "https://frontend-7mm6.onrender.com"
 
         ));
 
