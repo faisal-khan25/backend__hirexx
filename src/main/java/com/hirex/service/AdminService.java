@@ -1,5 +1,7 @@
 package com.hirex.service;
 
+import com.hirex.entity.Application;
+import com.hirex.entity.Job;
 import com.hirex.entity.Role;
 import com.hirex.entity.User;
 import com.hirex.repository.*;
@@ -24,6 +26,8 @@ public class AdminService {
         this.appRepo = appRepo;
     }
 
+    // ── Dashboard Stats ───────────────────────────────────────────
+
     public DashboardStats getDashboardStats() {
         DashboardStats stats = new DashboardStats();
         stats.setTotalJobSeekers(userRepo.countByRole(Role.JOBSEEKER));
@@ -36,7 +40,6 @@ public class AdminService {
         return stats;
     }
 
-    // count new managers per month for last 6 months
     private List<Map<String, Object>> getMonthlyGrowth() {
         List<Map<String, Object>> result = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
@@ -67,6 +70,64 @@ public class AdminService {
         }
         return result;
     }
+
+    // ── All Users ────────────────────────────────────────────────
+
+    public List<Map<String, Object>> getAllUsers() {
+        List<User> users = userRepo.findAll();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (User u : users) {
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("id", u.getId());
+            item.put("name", u.getName());
+            item.put("email", u.getEmail());
+            item.put("role", u.getRole().name());
+            item.put("createdAt", u.getCreatedAt());
+            result.add(item);
+        }
+        return result;
+    }
+
+    // ── All Jobs ─────────────────────────────────────────────────
+
+    public List<Map<String, Object>> getAllJobs() {
+        List<Job> jobs = jobRepo.findAll();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Job j : jobs) {
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("id", j.getId());
+            item.put("title", j.getTitle());
+            item.put("company", j.getCompany() != null ? j.getCompany().getName() : "—");
+            item.put("location", j.getLocation());
+            item.put("jobType", j.getJobType());
+            item.put("active", j.isActive());
+            item.put("postedAt", j.getPostedAt());
+            result.add(item);
+        }
+        return result;
+    }
+
+    // ── All Applications ─────────────────────────────────────────
+
+    public List<Map<String, Object>> getAllApplications() {
+        List<Application> apps = appRepo.findAll();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Application a : apps) {
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("id", a.getId());
+            item.put("applicantName",  a.getApplicant() != null ? a.getApplicant().getName()  : "—");
+            item.put("applicantEmail", a.getApplicant() != null ? a.getApplicant().getEmail() : "—");
+            item.put("jobTitle",  a.getJob() != null ? a.getJob().getTitle() : "—");
+            item.put("company",   a.getJob() != null && a.getJob().getCompany() != null
+                    ? a.getJob().getCompany().getName() : "—");
+            item.put("status",    a.getStatus() != null ? a.getStatus().name() : "—");
+            item.put("appliedAt", a.getAppliedAt());
+            result.add(item);
+        }
+        return result;
+    }
+
+    // ── DashboardStats DTO ────────────────────────────────────────
 
     public static class DashboardStats {
         private long totalJobSeekers;
